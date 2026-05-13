@@ -270,7 +270,11 @@ hr.orn::before{content:'✦ ✦ ✦';font-size:.95rem;color:var(--stone);letter-
   <div class="hud">
     <div><div class="hud-label">ביכורים</div><div class="hud-score" id="score-display">0 / 7</div></div>
     <div style="text-align:center;"><span class="lbadge" id="level-badge"></span></div>
-    <div style="text-align:left;"><div class="hud-label">הבא</div><div class="hud-next" id="status-text">חיטה</div></div>
+    <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
+      <div class="hud-label">הבא</div>
+      <div class="hud-next" id="status-text">חיטה</div>
+      <button onclick="goHome()" style="font-family:'Heebo',sans-serif;font-size:.65rem;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.15);color:var(--forest-bright);border-radius:4px;padding:2px 8px;cursor:pointer;margin-top:2px;">↩ חזרה לתפריט</button>
+    </div>
   </div>
   <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
   <div class="map-wrap">
@@ -454,6 +458,23 @@ function startGame(level){
   badge.className='lbadge lb-'+level;
   document.getElementById('status-text').innerText=allSpecies[0].name;
   renderMap();
+}
+
+function goHome(){
+  document.getElementById('game-screen').classList.add('hidden');
+  document.getElementById('win-screen').classList.add('hidden');
+  document.getElementById('start-screen').classList.remove('hidden');
+  // איפוס המשחק
+  currentStep=0; completed=[]; lvl='b';
+  // בחר שאלות חדשות
+  allSpecies.splice(0, allSpecies.length, ...questionBank.map(species => {
+    const picked = {};
+    ['b','s','g'].forEach(lvlKey => {
+      const pool = species[lvlKey];
+      picked[lvlKey] = pool[Math.floor(Math.random()*pool.length)];
+    });
+    return {name:species.name, token:species.token, pos:species.pos, ...picked};
+  }));
 }
 
 function renderMap(){
